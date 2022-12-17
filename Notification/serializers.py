@@ -4,6 +4,7 @@ from Posts.models import Comments
 
 
 class WelcomeNotificationSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model=models.WelcomeNotification
         fields=["title", "msg"]
@@ -24,7 +25,3 @@ class CommentNotificationSerializer(serializers.ModelSerializer):
 
     def get_comment(self, obj):
         return CommentSerializer_(obj.comment).data
-
-# try comment by serializermethodfield
-        # post=models.Post.objects.filter(content=obj)
-        # return OnePostSerializer(obj.post).data['title']

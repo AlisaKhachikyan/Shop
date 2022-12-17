@@ -23,10 +23,9 @@ from drf_yasg import openapi
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 from rest_framework.routers import DefaultRouter
 
-router = DefaultRouter()
-
-router.register('devices', FCMDeviceAuthorizedViewSet)
-
+# router = DefaultRouter()
+#
+# router.register('devices', FCMDeviceAuthorizedViewSet)
 #from django.urls import re_path
 
 # scheme_view=get_swagger_view(title='drf_Alisa')
@@ -43,7 +42,7 @@ openapi.Info(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('Posts.urls')),
+    path('post/', include('Posts.urls')),
     path('users/', include('Users.urls')),
     path('shop/', include('Shop.urls')),
     path('notification/', include('Notification.urls')),
@@ -58,14 +57,9 @@ urlpatterns = [
     #path('swagger/schema/', schema_view.with_ui('swagger',cache_timeout=0), name='swagger-schema'),
     path('api-auth/', include('rest_framework.urls', namespace = 'rest_framework')), #rest_framework' is not a registered namespace
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    #path('^notifications/', include('notifications_rest.urls')),
-
-    # re_path(swagger(P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    # re_path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schemaswaggerui'),
-    # re_path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schemaredoc'),
+    re_path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('account/', include('rest_framework.urls',  namespace = 'account')), #for swagger
-    path('fcm', include(router.urls)),
+    #path('fcm', include(router.urls)),
 
 ]

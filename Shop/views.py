@@ -68,8 +68,6 @@ class SearchMerchandise(APIView):
             serializer=serializers.AllMerchandisesSerializer(all_merchandises, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-#queries=[<Q: (AND: ('category__icontains', 'e'))>, <Q: (AND: ('condition__icontains', 'e'))>, <Q: (AND: ('title__icontains', 'e'))>]
-
 
 class UserMerchandise(APIView):
     permission_classes=[IsAuthenticated]
@@ -80,7 +78,7 @@ class UserMerchandise(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK )
 
 
-    def patch(self, request, pk):  #patch apranqi hamar, request anoxy apranqi tery lini
+    def patch(self, request, pk):  #patch for the merchandise, when the request user is the merchandise owner
         merchandise=models.Merchandise.objects.get(id=pk)
         if merchandise.user==request.user:
             serializer=serializers.MerchandiseSerializer(merchandise, data=request.data, partial=True)

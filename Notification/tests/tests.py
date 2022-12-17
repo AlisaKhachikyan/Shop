@@ -22,7 +22,7 @@ class WelcomeNotificationTest(APITestCase):
         self.assertEqual(serializer_data,response_data)
 
     def test_welcomenotification_delete(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.refresh.access_token}') #???
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.refresh.access_token}') 
         response=self.client.delete(reverse('welcomenotification', args=[1]))
         self.assertEqual(response.data, None)
         self.assertEqual(response.status_code, 204)

@@ -20,24 +20,38 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/Sony/Desktop/drf_Alisa/goog
 # BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# LOGGING = {
-#     'version': 1,y
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'WARNING',
-#             'class': 'logging.FileHandler',
-#             'filename': '/path/to/django/debug.log',  #???????
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['file'],
-#             'level': 'WARNING',
-#             'propagate': True,
-#         },
-#     },
-# }
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'main_format': {
+            'format': '{asctime}-{levelname}-{module}-{filename}-{message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'main_format',
+        },
+
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'main_format',
+            'filename': 'information.log'
+        },
+    },
+
+    'loggers': {
+        'main': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -89,41 +103,41 @@ SWAGGER_SETTINGS = {
     },
 }
 
-import firebase_admin
-from firebase_admin import initialize_app, credentials
-from google.auth import load_credentials_from_file
-from google.oauth2.service_account import Credentials
+# import firebase_admin
+# from firebase_admin import initialize_app, credentials
+# from google.auth import load_credentials_from_file
+# from google.oauth2.service_account import Credentials
+#
+# class CustomFirebaseCredentials(credentials.ApplicationDefault):
+#     def __init__(self, account_file_path: str):
+#         super().__init__()
+#         self._account_file_path = account_file_path
+#
+#     def _load_credential(self):
+#         if not self._g_credential:
+#             self._g_credential, self._project_id = load_credentials_from_file(self._account_file_path,
+#                                                                               scopes=credentials._scopes)
 
-class CustomFirebaseCredentials(credentials.ApplicationDefault):
-    def __init__(self, account_file_path: str):
-        super().__init__()
-        self._account_file_path = account_file_path
-
-    def _load_credential(self):
-        if not self._g_credential:
-            self._g_credential, self._project_id = load_credentials_from_file(self._account_file_path,
-                                                                              scopes=credentials._scopes)
-
-FIREBASE_APP = initialize_app()
-
-custom_credentials = CustomFirebaseCredentials(os.getenv('CUSTOM_GOOGLE_APPLICATION_CREDENTIALS'))
-FIREBASE_MESSAGING_APP = initialize_app(custom_credentials, name='messaging')
-
-FCM_DJANGO_SETTINGS = {
-     # default: _('FCM Django')
-    "APP_VERBOSE_NAME": "[string for AppConfig's verbose_name]",
-     # true if you want to have only one active device per registered user at a time
-     # default: False
-    "ONE_DEVICE_PER_USER": True,
-     # devices to which notifications cannot be sent,
-     # are deleted upon receiving error response from FCM
-     # default: False
-    "DELETE_INACTIVE_DEVICES": True,
-    # Transform create of an existing Device (based on registration id) into
-                # an update. See the section
-    # "Update of device with duplicate registration ID" for more details.
-    "UPDATE_ON_DUPLICATE_REG_ID": True,
-}
+# FIREBASE_APP = initialize_app()
+#
+# custom_credentials = CustomFirebaseCredentials(os.getenv('CUSTOM_GOOGLE_APPLICATION_CREDENTIALS'))
+# FIREBASE_MESSAGING_APP = initialize_app(custom_credentials, name='messaging')
+#
+# FCM_DJANGO_SETTINGS = {
+#      # default: _('FCM Django')
+#     "APP_VERBOSE_NAME": "[string for AppConfig's verbose_name]",
+#      # true if you want to have only one active device per registered user at a time
+#      # default: False
+#     "ONE_DEVICE_PER_USER": True,
+#      # devices to which notifications cannot be sent,
+#      # are deleted upon receiving error response from FCM
+#      # default: False
+#     "DELETE_INACTIVE_DEVICES": True,
+#     # Transform create of an existing Device (based on registration id) into
+#                 # an update. See the section
+#     # "Update of device with duplicate registration ID" for more details.
+#     "UPDATE_ON_DUPLICATE_REG_ID": True,
+# }
 
 SITE_ID=1
 
@@ -190,7 +204,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL='Users.CustomUser'  ##User stexcelis nshum enq modely
+AUTH_USER_MODEL='Users.CustomUser'  ##When creating user we mention the model
+
 #REST_FRAMEWORK={'DEFAULT_PERMISSION_CLASSES':['rest_framework.permissions.IsAuthenticated']}
 #DEFAULT_PERMISSION_CLASSES=['rest_framework.permissions.AllowAny']
 
@@ -210,8 +225,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -228,7 +241,3 @@ LOGOUT_URL = 'rest_framework:logout'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# 
-# CRONJOBS=[
-# ('*/1 * * * *', 'Notification.cron')
-# ]

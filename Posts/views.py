@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.http import Http404
+import logging
 
 Get_response_schema={
     status.HTTP_200_OK:openapi.Response('OK')
@@ -54,6 +55,8 @@ class AddPost(APIView):
 
     @swagger_auto_schema(request_body=serializers.OnePostSerializer, responses=Add_response_schema)
     def post(self, request):
+        logger=logging.getLogger('main')
+        logger.info('New post')
         serializer=serializers.OnePostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
