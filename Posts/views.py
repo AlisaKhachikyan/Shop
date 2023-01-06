@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from django.http import Http404
 import logging
 
+
 Get_response_schema={
     status.HTTP_200_OK:openapi.Response('OK')
 }
@@ -33,7 +34,6 @@ Delete_response_schema={
 
 
 class AllCategories(APIView):
-
     @swagger_auto_schema(responses=Get_response_schema)
     def get(self, request):
         categories=models.Categories.objects.all()
@@ -42,7 +42,6 @@ class AllCategories(APIView):
 
 
 class GetPost(APIView):
-
     @swagger_auto_schema(responses=Get_response_schema)
     def get(self, request, pk):
         instance=get_object_or_404(models.Post, id=pk)
@@ -80,6 +79,7 @@ class EditPost(APIView):
 
 
 class DeletePost(APIView):
+    permission_classes=[IsAuthenticated]
 
     @swagger_auto_schema(request_body=serializers.OnePostSerializer, responses=Delete_response_schema)
     def delete(self, request, pk):
@@ -91,7 +91,6 @@ class DeletePost(APIView):
 
 
 class AllComments(APIView):
-
     @swagger_auto_schema(responses=Get_response_schema)
     def get(self, request):
         comments=models.Comments.objects.all()
@@ -110,21 +109,21 @@ class AddComment(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EditComment(APIView):
+    permission_classes=[IsAuthenticated]
 
     @swagger_auto_schema(request_body=serializers.CommentSerializer, responses=Edit_response_schema)
     def patch(self, request, pk):
         instance=get_object_or_404(models.Comments, id=pk)
-        #post=instance.post
         if request.user==instance.user:
             serializer=serializers.CommentSerializer(instance, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save(user=request.user)
-                #sendcommentnotification(msg='request.user commencted your post', post.user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class DeleteComment(APIView):
+    permission_classes=[IsAuthenticated]
 
     @swagger_auto_schema(request_body=serializers.CommentSerializer, responses=Delete_response_schema)
     def delete(self, request, pk):
@@ -134,8 +133,3 @@ class DeleteComment(APIView):
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-#AVELACNEL COMMENTI VIEW
-#tester posti hamar
-#docker
-#vonca notification ashxatum djangoum, vonc chat sarqel

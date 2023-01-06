@@ -3,32 +3,28 @@ from . import models
 from django.db.models import Sum
 
 class AllMerchandisesSerializer(serializers.ModelSerializer):
-
     class Meta:
         model=models.Merchandise
         fields=['category','condition','price', 'title']
 
 class MerchandiseSerializer(serializers.ModelSerializer):
-
     class Meta:
         model=models.Merchandise
         fields=['category','condition','price', 'title', 'description', 'image']
 
 class CartItemsListSerializer(serializers.ModelSerializer):
-
     class Meta:
         model=models.Merchandise
         fields=['pk','category','condition','price', 'title']
 
 class CartItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model=models.CartItem
         fields=['merchandise']
 
 class OwnCartItem(serializers.ModelSerializer):
     merchandise=serializers.SerializerMethodField()
-
+    
     class Meta:
         model=models.CartItem
         fields=['pk','merchandise', 'price']

@@ -8,7 +8,6 @@ from Users.models import CustomUser as User
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class AllCategoriesTest(APITestCase):
-
     def setUp(self):
         self.category_1=models.Categories.objects.create(name='Furniture', description='for home')
         self.category_2=models.Categories.objects.create(name='Elecrtonics', description='every kind')
@@ -23,8 +22,8 @@ class AllCategoriesTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(serializer_data,response_data)
 
-class PostTest(APITestCase):
 
+class PostTest(APITestCase):
     def setUp(self):
         self.user_1=User.objects.create_user(email='fdgjfd@mail.ru', password='onetwofive', first_name='A', last_name='K')
         self.user_1.save()
@@ -80,8 +79,8 @@ class AllCommentsTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(serializer_data,response_data)
 
-class CommentsTest(APITestCase):
 
+class CommentsTest(APITestCase):
     def setUp(self):
         self.user_1=User.objects.create_user(email='fdgjfd@mail.ru', password='onetwofive', first_name='A', last_name='K')
         self.user_2=User.objects.create_user(email='fd@mail.ru', password='onetwo', first_name='D', last_name='K')
@@ -94,7 +93,6 @@ class CommentsTest(APITestCase):
         self.refresh_3=RefreshToken.for_user(self.user_3)
         self.post=models.Post.objects.create(user=self.user_2, title='aa', content='ghf') #chem kara naxord classic vercnem?
         self.comment=models.Comments.objects.create(user=self.user_1, content='dfs', post=self.post)
-
 
     def test_comment_add(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.refresh.access_token}')

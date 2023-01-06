@@ -3,7 +3,6 @@ from Users.models import CustomUser as User
 from firebase_admin.messaging import Message, Notification
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from fcm_django.models import FCMDevice
 from google.oauth2 import service_account
 from .models import WelcomeNotification, CommentNotification
 

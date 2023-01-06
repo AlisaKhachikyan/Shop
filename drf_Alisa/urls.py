@@ -16,19 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-#from rest_framework_swagger.views import get_swagger_view
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 from rest_framework.routers import DefaultRouter
 
-# router = DefaultRouter()
-#
-# router.register('devices', FCMDeviceAuthorizedViewSet)
-#from django.urls import re_path
 
-# scheme_view=get_swagger_view(title='drf_Alisa')
 schema_view = get_schema_view(
 openapi.Info(
      title="API",
@@ -48,14 +42,7 @@ urlpatterns = [
     path('notification/', include('Notification.urls')),
     path('api/token', TokenObtainPairView.as_view()),
     path('api/token/refresh', TokenRefreshView.as_view()),
-    #path('swagger/', scheme_view),
-    # path('api/v1/',
-    #     include([
-    #     path('swagger/schema/', schema_view.with_ui('swagger',cache_timeout=0), name='swagger-schema')
-    #     ])
-    # ),
-    #path('swagger/schema/', schema_view.with_ui('swagger',cache_timeout=0), name='swagger-schema'),
-    path('api-auth/', include('rest_framework.urls', namespace = 'rest_framework')), #rest_framework' is not a registered namespace
+    path('api-auth/', include('rest_framework.urls', namespace = 'rest_framework')), # for rest_framework' is not a registered namespace
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

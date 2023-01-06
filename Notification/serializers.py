@@ -4,17 +4,16 @@ from Posts.models import Comments
 
 
 class WelcomeNotificationSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model=models.WelcomeNotification
         fields=["title", "msg"]
 
 
 class CommentSerializer_(serializers.ModelSerializer): #CommentSerializer for CommentNotification
-
     class Meta:
         model=Comments
         fields=['content']
+
 
 class CommentNotificationSerializer(serializers.ModelSerializer):
     comment=serializers.SerializerMethodField()

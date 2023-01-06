@@ -13,7 +13,6 @@ class Merchandise(models.Model):
     def __str__(self):
         return self.title
 
-
 class Cart(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     active=models.BooleanField(default=True)

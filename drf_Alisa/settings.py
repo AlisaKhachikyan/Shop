@@ -15,9 +15,7 @@ from pathlib import Path
 
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/Sony/Desktop/drf_Alisa/googlecredentials.json"
-#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "path_to_your_.json_credential_file"
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 LOGGING = {
@@ -84,13 +82,14 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration', #for  registration
     'rest_framework_simplejwt',
-    #'rest_framework_swagger',
     'drf_yasg',
     'notifications',
     'Notification.apps.NotificationConfig',
     'notifications_rest',
     'fcm_django',
-    'django_crontab'
+    'django_crontab',
+    'django_celery_beat',
+    'django_celery_results',
 
 ]
 SWAGGER_SETTINGS = {
@@ -241,3 +240,25 @@ LOGOUT_URL = 'rest_framework:logout'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = 'amqp://guest@localhost:5672//'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Yerevan'
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+
+CELERY_BEAT_SCHELUDER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+#add the port number of the email server
+EMAIL_PORT = 587
+#add your gamil here
+EMAIL_HOST_USER = 'khachikyan.alisa@mail.ru'
+EMAIL_HOST_PASSWORD = 'admin'
+DEFAULT_FROM_EMAIL='Celery <khachikyan.alisa@mail.ru.com'

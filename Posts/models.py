@@ -9,6 +9,7 @@ class Categories(models.Model):
     def __str__(self):
         return self.name
 
+
 class Post(models.Model):
     category=models.ForeignKey(Categories, on_delete=models.CASCADE, null=True, related_name="category")
     user=models.ForeignKey(User, on_delete=models.CASCADE, null=True)

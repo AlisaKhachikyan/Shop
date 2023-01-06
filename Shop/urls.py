@@ -9,7 +9,6 @@ urlpatterns = [path('all-merchandises', views.AllMerchandises.as_view(), name='a
                path('my-merchandise/<int:pk>', views.UserMerchandise.as_view(), name='mymerchandisepk'),
                path('add-cart-item', views.AddCartItem.as_view(), name='addcartitem'),
                path('get-cart', views.GetCart.as_view(), name='getcart'),
-               path('get-cart/<int:pk>', views.GetCart.as_view(), name='getcartpk'),
                path('delete-cart', views.DeleteCart.as_view(), name='deletecart'),
                path('search-merchandise', views.SearchMerchandise.as_view(), name='searchmerchandise'),
 ]

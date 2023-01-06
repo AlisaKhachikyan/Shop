@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from .managers import CustomUserManager
 
 
-
 class CustomUser(AbstractUser):
     username=None
     email=models.EmailField(unique=True)

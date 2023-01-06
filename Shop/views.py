@@ -10,9 +10,36 @@ from django.http import Http404
 from django.db.models import Q, CharField
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from django.shortcuts import get_object_or_404
+import logging
+
+
+Get_response_schema={
+    status.HTTP_200_OK:openapi.Response('OK'),
+    status.HTTP_400_BAD_REQUEST:openapi.Response('Not Valid'),
+}
+
+Add_response_schema={
+    status.HTTP_201_CREATED:openapi.Response('Posted'),
+    status.HTTP_400_BAD_REQUEST:openapi.Response('Not Valid')
+}
+
+Edit_response_schema={
+    status.HTTP_201_CREATED:openapi.Response('Edited'),
+    status.HTTP_400_BAD_REQUEST:openapi.Response('Not Valid'),
+    status.HTTP_401_UNAUTHORIZED:openapi.Response('Unauthorized')
+}
+
+Delete_response_schema={
+    status.HTTP_204_NO_CONTENT:openapi.Response('Deleted'),
+    status.HTTP_401_UNAUTHORIZED:openapi.Response('Unauthorized')
+}
+
 
 class AllMerchandises(APIView):
+
+    @swagger_auto_schema(responses=Get_response_schema)
     def get(self, request, format=None, *args, **kwargs):
         get_data=request.query_params
         merchandises=models.Merchandise.objects.all()
@@ -31,6 +58,8 @@ class AllMerchandises(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SearchMerchandise(APIView):
+
+    @swagger_auto_schema(responses=Get_response_schema)
     def get(self, request, format=None, *args, **kwargs):
         get_data=request.query_params
         all_merchandises=models.Merchandise.objects.all()
@@ -40,7 +69,7 @@ class SearchMerchandise(APIView):
                 serializer=serializers.AllMerchandisesSerializer(merchandise, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             elif get_data.get('all', ''):
-                fields=[f for f in models.Merchandise._meta.fields if isinstance(f, CharField)] #_meta.fields-Retrieve all field instances of a model
+                fields=[f for f in models.Merchandise._meta.fields if isinstance(f, CharField)] #_meta.fields-Retrieve all field instances of a model,, by CHarfield we except ID field
                 queries=[Q(**{f.name+'__icontains': get_data.get('all')}) for f in fields] #dictionary
                 qs=Q()
                 for query in queries:
@@ -72,12 +101,13 @@ class SearchMerchandise(APIView):
 class UserMerchandise(APIView):
     permission_classes=[IsAuthenticated]
 
-    def get(self, request):
+    @swagger_auto_schema(responses=Get_response_schema)
+    def get(self, request):   #get your own merchandises
         merchandises=models.Merchandise.objects.filter(user=request.user)
         serializer=serializers.AllMerchandisesSerializer(merchandises, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK )
 
-
+    @swagger_auto_schema(request_body=serializers.MerchandiseSerializer, responses=Edit_response_schema)
     def patch(self, request, pk):  #patch for the merchandise, when the request user is the merchandise owner
         merchandise=models.Merchandise.objects.get(id=pk)
         if merchandise.user==request.user:
@@ -91,13 +121,16 @@ class UserMerchandise(APIView):
 class Merchandise(APIView):
     permission_classes=[IsAuthenticated]
 
+    @swagger_auto_schema(responses=Get_response_schema)
     def get(self, request, pk):
         merchandise=models.Merchandise.objects.get(id=pk)
         serializer=serializers.MerchandiseSerializer(merchandise)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    #@swagger_auto_schema(request_body=serializers.MerchandiseSerializer)
+    @swagger_auto_schema(request_body=serializers.MerchandiseSerializer, responses=Add_response_schema)
     def post(self, request):
+        logger=logging.getLogger('main')
+        logger.info('New merchandise')
         serializer=serializers.MerchandiseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
@@ -108,12 +141,13 @@ class Merchandise(APIView):
 class AddCartItem(APIView):
     permission_classes=[IsAuthenticated]
 
+    @swagger_auto_schema(request_body=serializers.CartItemSerializer, responses=Add_response_schema)
     def post(self, request):
         try:
             cart=models.Cart.objects.get(user=request.user, active=True)
         except:
             cart=models.Cart.objects.create(user=request.user)
-        merchandise=models.Merchandise.objects.get(id=request.data.get('merchandise'))  #dict.get()..requestum talis enq merchandise vorpes key u id-n vorpes value
+        merchandise=models.Merchandise.objects.get(id=request.data.get('merchandise'))  #dict.get().. merchandise is the key here
         price=merchandise.price
         serializer=serializers.CartItemSerializer(data=request.data)
         if serializer.is_valid():
@@ -124,28 +158,20 @@ class AddCartItem(APIView):
 class GetCart(APIView):
     permission_classes=[IsAuthenticated]
 
-    def get_object(self, pk):
-        try:
-            return models.CartItem.objects.get(pk=pk)
-        except models.CartItem.DoesNotExist:
-            raise Http404
-
-    def get(self, request):
+    @swagger_auto_schema(responses=Get_response_schema)
+    def get(self, request): #get my cart
         try:
             cart=models.Cart.objects.get(user=request.user)
         except:
-            cart=models.Cart.objects.create(user=request.user)
+            cart=models.Cart.objects.create(user=request.user)  #if there is no cart, create it
         serializer=serializers.CartSerializer(cart)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self,request,pk):
-        item=self.get_object(pk)
-        item.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DeleteCart(APIView):
     permission_classes=[IsAuthenticated]
 
+    @swagger_auto_schema(request_body=serializers.CartSerializer, responses=Delete_response_schema)
     def delete(self, request):
         cart=get_object_or_404(models.Cart, user=request.user)
         cart.delete()
@@ -154,6 +180,7 @@ class DeleteCart(APIView):
 class DeleteCartItem(APIView):
     permission_classes=[IsAuthenticated]
 
+    @swagger_auto_schema(request_body=serializers.CartItemSerializer, responses=Delete_response_schema)
     def delete(self, request, pk):
         cart_item=get_object_or_404(models.CartItem, id=pk)
         cart_item.delete()

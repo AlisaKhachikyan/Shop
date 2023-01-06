@@ -6,6 +6,9 @@ from rest_framework.views import APIView
 from . import serializers
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from .tasks import a_weekly_reminder_to_visit
+from django.http import HttpResponse
+
 
 Get_response_schema={
     status.HTTP_200_OK:openapi.Response('OK')
@@ -16,8 +19,8 @@ Delete_response_schema={
     status.HTTP_401_UNAUTHORIZED:openapi.Response('Unauthorized')
 }
 
-class WelcomeNotificationView(APIView):
 
+class WelcomeNotificationView(APIView):
     @swagger_auto_schema(responses=Get_response_schema)
     def get(self,request,pk):
         notification=WelcomeNotification.objects.get(id=pk)
@@ -32,8 +35,8 @@ class WelcomeNotificationView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-class CommentNotificationView(APIView):
 
+class CommentNotificationView(APIView):
     @swagger_auto_schema(responses=Get_response_schema)
     def get(self,request,pk):
         notification=CommentNotification.objects.get(id=pk)
@@ -48,8 +51,8 @@ class CommentNotificationView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-class MyCommentNotificationList(APIView):
 
+class MyCommentNotificationList(APIView):
     @swagger_auto_schema(responses=Get_response_schema)
     def get(self,request): #get all my comment notifications
         notification=CommentNotification.objects.filter(post_user=request.user)

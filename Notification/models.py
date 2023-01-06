@@ -4,7 +4,6 @@ from Users.models import CustomUser as User
 
 
 class WelcomeNotification(models.Model):
-
     title= models.CharField(max_length=200)
     msg = models.TextField()
     is_seen = models.BooleanField(default=False)
@@ -12,7 +11,6 @@ class WelcomeNotification(models.Model):
 
 
 class CommentNotification(models.Model):
-
     msg = models.TextField()
     is_seen = models.BooleanField(default=False)
     datetime = models.DateTimeField(auto_now_add=True)

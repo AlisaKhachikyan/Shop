@@ -7,13 +7,8 @@ class AllCategoriesSerializer(serializers.ModelSerializer):
         model=models.Categories
         fields=['name', 'description']
 
-# class AllCommentsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model=models.Comments
-#         fields=['post','content']
 
 class CommentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model=models.Comments
         fields=['content','post','user',]
@@ -25,6 +20,7 @@ class GetCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model=models.Comments
         fields=['content','user','post']
+
     def get_post(self,obj):
         post=models.Post.objects.filter(content=obj)
         return OnePostSerializer(obj.post).data['title']

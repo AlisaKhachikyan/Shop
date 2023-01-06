@@ -8,7 +8,6 @@ from Notification.models import WelcomeNotification, CommentNotification
 from Posts.models import Comments, Post
 
 class WelcomeNotificationTest(APITestCase):
-
     def setUp(self):
         self.user=User.objects.create_user(email='fdfvgjfd@mail.ru', password='onetwofive', first_name='A', last_name='K')
         self.user.save()
@@ -22,13 +21,12 @@ class WelcomeNotificationTest(APITestCase):
         self.assertEqual(serializer_data,response_data)
 
     def test_welcomenotification_delete(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.refresh.access_token}') 
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.refresh.access_token}')
         response=self.client.delete(reverse('welcomenotification', args=[1]))
         self.assertEqual(response.data, None)
         self.assertEqual(response.status_code, 204)
 
 class CommentNotificationTest(APITestCase):
-
     def setUp(self):
         self.user=User.objects.create_user(email='fdfvgjfd@mail.ru', password='onetwofive', first_name='A', last_name='K')
         self.post=Post.objects.create(title='ds', content='fdfd', user=self.user)
