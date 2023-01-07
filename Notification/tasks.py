@@ -9,7 +9,7 @@ def a_weekly_reminder_to_visit(self):
     #operations
     users = get_user_model().objects.all()
     for user in users:
-        mail_subject="Hello from Unique Shop!"
+        mail_subject="Hello from Shop!"
         message="We have new merchandises that may interest you! Visit our website for more information!"
         to_email=user.email
         send_mail(
@@ -20,5 +20,3 @@ def a_weekly_reminder_to_visit(self):
             fail_silently=True,
         )
     return 'Done'
-
-#https://blog.knoldus.com/how-to-send-email-using-celery-in-django-application/
